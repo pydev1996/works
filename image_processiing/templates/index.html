@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+ 
+{% block content %}
+<div class="row">
+    <form action="/upload-files/" enctype="multipart/form-data" method="post">
+        
+    </form>
+    <div class="col-12">
+    {% for rs in show %}
+	<div class="product-item">
+        <div class= "product-image" style="padding:20px;float:left;">
+            <img  src="{{ url_for('images', path=rs) }}" width="150" height="100">  
+	   <div class="product-title" style="color: black;">file</div>
+	   <div  style="color: black;">&#8377;size</div>
+        </div>
+      </div>
+    {% endfor %}  
+    </div>
+</div>    
+{% endblock content %}

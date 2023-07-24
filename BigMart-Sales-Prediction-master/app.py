@@ -1,0 +1,182 @@
+from flask import Flask,render_template,request,render_template,redirect
+import pickle
+import pandas as pd
+import numpy as np
+import os
+import easygui
+from user_database import *
+#Load pickel file
+model = pickle.load(open('model.pkl', 'rb'))
+
+
+
+app = Flask(__name__)
+@app.route('/',methods =["GET", "POST"])
+def login():
+    if request.method == "POST":
+       
+       user_name = request.form.get("uname")
+       pwd=request.form.get("psw")
+
+       df=pd.read_csv("database.csv",header=None)
+       data=user_data()
+       for i in data:
+        if user_name==i[0] and pwd==i[1]:
+            return redirect('/home')
+
+    return render_template('login.html')
+
+@app.route('/signup',methods =["GET", "POST"])
+def signup():
+    if request.method == "POST":
+       
+       user_name = request.form.get("fname")
+       pwd1 = request.form.get("psw")
+       pwd2 = request.form.get("psw1")
+       if pwd1!= pwd2:
+            easygui.msgbox("The two password does not match", title="Error")
+            return redirect('/signup')
+       else:
+           register_user(user_name,pwd1,pwd2)
+           #return render_template('login.html')
+
+    return render_template('register.html')
+@app.route('/home')
+def home():
+    return render_template('main.html')
+@app.route('/search',methods =["GET", "POST"])
+def search():
+    result=pd.read_csv("main_data.csv")
+    store2=result['Outlet_Identifier']
+    if request.method=="POST":
+        store_res=str(request.form.get("selectstore"))
+        result1=result[result['Outlet_Identifier']==store_res]
+        return render_template('search.html', tables=[result1.to_html()], titles=[''],stor2=store2)
+    else:
+        return render_template('search.html', tables=[result.to_html()], titles=[''],stor2=store2)
+
+    
+    
+@app.route('/index')
+def index():
+    return render_template('index.html')
+@app.route('/predict',methods=['POST'])
+def predict():
+
+    Item_Identifier = request.form['Item ID']
+    Item_Weight = float(request.form['Weight'])
+
+    item_fat_content=request.form['Item Fat Content']
+
+    if (item_fat_content== 'Low Fat'):
+        item_fat_content = 0,0
+    elif (item_fat_content== 'Regular'):
+        item_fat_content = 0,1
+    else:
+        item_fat_content = 1,0
+
+    Item_Fat_Content_1,Item_Fat_Content_2 = item_fat_content
+
+    Item_Visibility = float(request.form['Range 0.6-1.8'])
+
+    Item_MRP = float(request.form['Item MRP'])
+    
+    Outlet_Identifier = request.form['Outlet ID']
+    Outlet_ID = Outlet_Identifier
+    if (Outlet_Identifier== 'OUT010'):
+        Outlet_Identifier = 0,0,0,0,0,0,0,0,0
+    elif (Outlet_Identifier== 'OUT013'):
+        Outlet_Identifier = 1,0,0,0,0,0,0,0,0
+    elif (Outlet_Identifier== 'OUT017'):
+        Outlet_Identifier = 0,1,0,0,0,0,0,0,0
+    elif (Outlet_Identifier== 'OUT018'):
+        Outlet_Identifier = 0,0,1,0,0,0,0,0,0
+    elif (Outlet_Identifier== 'OUT019'):
+        Outlet_Identifier = 0,0,0,1,0,0,0,0,0
+    elif (Outlet_Identifier== 'OUT027'):
+        Outlet_Identifier = 0,0,0,0,1,0,0,0,0
+    elif (Outlet_Identifier== 'OUT035'):
+        Outlet_Identifier = 0,0,0,0,0,1,0,0,0
+    elif (Outlet_Identifier== 'OUT045'):
+        Outlet_Identifier = 0,0,0,0,0,0,1,0,0                        
+    elif (Outlet_Identifier== 'OUT046'):
+        Outlet_Identifier = 0,0,0,0,0,0,0,1,0       
+    else:
+        Outlet_Identifier = 0,0,0,0,0,0,0,0,1
+
+    Outlet_1, Outlet_2,Outlet_3, Outlet_4, Outlet_5, Outlet_6, Outlet_7, Outlet_8,Outlet_9 = Outlet_Identifier
+
+
+
+    Outlet_Year = int(2013 - int(request.form['Year']))
+
+    Outlet_Size  = request.form['Size']
+    if (Outlet_Size == 'Medium'):
+        Outlet_Size = 1,0
+    elif (Outlet_Size == 'Small'):
+        Outlet_Size = 0,1
+    else:
+        Outlet_Size = 0,0
+
+    Outlet_Size_1, Outlet_Size_2 = Outlet_Size
+
+    Outlet_Location_Type = request.form['Location Type']
+    if (Outlet_Location_Type == 'Tier 2'):
+        Outlet_Location_Type = 1,0
+    elif (Outlet_Location_Type == 'Tier 3'):
+        Outlet_Location_Type = 0,1
+    else:
+        Outlet_Location_Type = 0,0
+
+    Outlet_Location_Type_1,Outlet_Location_Type_2 = Outlet_Location_Type    
+
+    Outlet_Type = request.form['Outlet Type']
+    if (Outlet_Type == 'Supermarket Type1'):
+        Outlet_Type = 1,0,0
+    elif (Outlet_Type == 'Grocery Store'):
+        Outlet_Type = 0,0,0
+    elif (Outlet_Type == 'Supermarket Type3'):
+        Outlet_Type = 0,0,1
+    else:
+        Outlet_Type = 0,1,0
+
+    Outlet_Type_1, Outlet_Type_2, Outlet_Type_3 = Outlet_Type   
+
+    Item_Type_Combined = request.form['Item Type']
+    
+    if(Item_Type_Combined == "Drinks"):
+        Item_Type_Combined = 0,0
+    elif (Item_Type_Combined == "Food"):
+        Item_Type_Combined = 1,0
+    else:
+        Item_Type_Combined = 0,1    
+
+    Item_Type_Combined_1, Item_Type_Combined_2 = Item_Type_Combined
+
+    data = [Item_Weight, Item_Visibility, Item_MRP, Outlet_Year,Item_Fat_Content_1, Item_Fat_Content_2, Outlet_Location_Type_1,Outlet_Location_Type_2, Outlet_Size_1, Outlet_Size_2,Outlet_Type_1, Outlet_Type_2, Outlet_Type_3,Item_Type_Combined_1, Item_Type_Combined_2, Outlet_1, Outlet_2,Outlet_3, Outlet_4, Outlet_5, Outlet_6, Outlet_7, Outlet_8,Outlet_9]
+    features_value = [np.array(data)]
+
+    features_name = ['Item_Weight', 'Item_Visibility', 'Item_MRP', 'Outlet_Years',
+    'Item_Fat_Content_1', 'Item_Fat_Content_2', 'Outlet_Location_Type_1',
+    'Outlet_Location_Type_2', 'Outlet_Size_1', 'Outlet_Size_2',
+    'Outlet_Type_1', 'Outlet_Type_2', 'Outlet_Type_3',
+    'Item_Type_Combined_1', 'Item_Type_Combined_2', 'Outlet_1', 'Outlet_2',
+    'Outlet_3', 'Outlet_4', 'Outlet_5', 'Outlet_6', 'Outlet_7', 'Outlet_8',
+    'Outlet_9']
+
+    df = pd.DataFrame(features_value, columns=features_name)
+
+    myprd = model.predict(df)
+    output=round(myprd[0],2)
+
+    # if output < 0:
+    #     return render_template('index.html',prediction_texts="Sorry you cannot sell")
+    # else:
+    #     return render_template('index.html',prediction_text="Item_Outlet_Sales at {}".format(output))
+
+    return render_template('result.html',prediction = output,Item_Identifier = Item_Identifier, Outlet_Identifier = Outlet_ID)
+    #return render_template('result.html', prediction_text='The Sales production of {} by {} is  {}  price'.format(Item_Identifier,Outlet_ID,output))
+
+
+if __name__ == '__main__':
+	app.run(debug=True)

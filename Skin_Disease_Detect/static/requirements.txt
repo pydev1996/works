@@ -1,0 +1,9 @@
+ create table documents(id varchar(250),data MEDIUMBLOB); 
+(id ,data)
+
+create table facultysignup(id varchar(250),username varchar(250),password varchar(250),repassword varchar(250));
+(id ,username ,password ,repassword)
+
+(name,pan,universitydegree,dateofrecievingdegree,areaofspecialisation,researchpaper,phdguidence,currentdesignaiton,phdgranted,guestlectures)
+
+create table facultydashboard(id varchar(250),name varchar(250),pan varchar(250),universitydegree varchar(250),dateofrecievingdegree varchar(250),areaofspecialisation varchar(250),researchpaper varchar(250),phdguidence varchar(250),currentdesignaiton varchar(250),phdgranted varchar(250),guestlectures varchar(250));

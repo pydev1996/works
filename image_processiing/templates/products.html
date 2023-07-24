@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>E market for Farmers</title>
+	<link href="{{ url_for('static', path='css/style2.css') }}" rel="stylesheet" type="text/css" />
+
+</head>
+<body>
+	
+         
+	<div id="product-grid">
+		<div class="txt-heading">Products</div>
+
+		{% for product in range(d2) %}
+
+			<div class="product-item">
+				<form method="post" action="/add">
+					<div class="product-image"><img src="{{ url_for('images', path=d3[product]) }}" width="10" height="10"></div>
+					
+				</form>
+			</div>
+
+		{% endfor %}
+	
+	</div>
+</body>
+</html>

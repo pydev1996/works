@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body{
+		background-image: url('./static/bg3.jpg');
+		background-repeat: no-repeat;
+                background-size: 100%;
+		font-family: Arial, Helvetica, sans-serif;
+                
+	}
+
+        h1 {
+            text-align: center;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        .r {
+            max-width: 400px;
+            background: blanchedalmond;
+            margin: auto;
+        }
+
+        button[type=submit] {
+            background: green;
+            padding: 8px;
+        }
+
+        button[type=cancel] {
+            background: red;
+            padding: 8px;
+        }
+        .imgcontainer {
+  		text-align: center;	
+                margin: 24px 0 12px 0;
+        }
+
+        img.avatar {
+              width: 10%;
+              border-radius: 50%;
+        }
+        .r {
+            max-width: 450px;
+            margin: auto;
+            background: lightblue;
+            border: 2px solid white;
+            padding: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Sign Up</h1>
+    <div class="imgcontainer">
+          <img src="./static/img_avatar.png" alt="Avatar" class="avatar">
+    </div>
+    <h2>Please fill this form to create an account</h2>
+    <div class="r">
+        <form action="/signup" method="post">
+            <b>User Name</b>: <br>
+            <input type="text" placeholder="Enter username" name="fname" required>
+            <br> <br>
+            <b>Password</b>: <br>
+            <input type="password" placeholder="Enter password" name="psw" required>
+            <br> <br>
+            <b>Re Password</b>: <br>
+            <input type="password" placeholder="Enter re password" name="psw1" required>
+            <br> <br>
+            <button type="submit" >Signup</button>
+            <button type="cancel" onclick='window.location.href="{{url_for('login')}}"'.style="width:auto;">Back</button> 
+        </form>
+    </div>
+
+</body>
+
+</html>
